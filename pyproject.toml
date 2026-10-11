@@ -1,0 +1,110 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "tracehub"
+version = "0.1.0"
+description = "Read-only DevOps diagnostic agent"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "Proprietary" }
+
+dependencies = [
+    "pydantic>=2.7",
+    "pydantic-settings>=2.2",
+    "structlog>=24.1",
+    "httpx>=0.27",
+    "PyYAML>=6.0",
+    "typer>=0.12",
+    "rich>=13.7",
+    "tenacity>=8.2",
+    "sqlalchemy[asyncio]>=2.0.30",
+    "asyncpg>=0.29",
+    "alembic>=1.13",
+    "pgvector>=0.2.5",
+    "fastapi>=0.111",
+    "uvicorn[standard]>=0.30",
+    "mcp>=2.2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.2",
+    "pytest-asyncio>=0.23",
+    "anyio>=4.3",
+    "ruff>=0.5",
+    "mypy>=1.10",
+    "types-PyYAML>=6.0",
+]
+
+[project.scripts]
+tracehub = "tracehub_core.cli:app"
+tracehub-mcp-k8s = "tracehub_mcp_k8s.server:main"
+
+[tool.setuptools.packages.find]
+where = [
+    "packages/tracehub-core",
+    "packages/tracehub-kb",
+    "packages/tracehub-api",
+    "packages/tracehub-mcp-common",
+    "packages/tracehub-mcp-k8s",
+]
+include = ["tracehub_*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+# Markdown icindeki kod bloklari ornek/sozde koddur, bicimlendirilmez.
+extend-exclude = ["migrations", "*.md"]
+
+[tool.ruff.lint]
+select = [
+    "E", "F", "W",      # pycodestyle / pyflakes
+    "I",                # isort
+    "UP",               # pyupgrade
+    "B",                # bugbear
+    "ASYNC",            # async hatalari
+    "S",                # bandit guvenlik
+    "T20",              # print() yasagi
+    "RET", "SIM", "PTH",
+]
+ignore = ["S101"]  # pytest assert
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S", "T20"]
+"packages/tracehub-core/tracehub_core/cli.py" = ["T20"]
+
+[tool.ruff.lint.isort]
+known-first-party = [
+    "tracehub_core",
+    "tracehub_kb",
+    "tracehub_api",
+    "tracehub_agent",
+    "tracehub_mcp_common",
+    "tracehub_mcp_k8s",
+]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_unreachable = true
+plugins = ["pydantic.mypy"]
+mypy_path = "packages/tracehub-core:packages/tracehub-kb:packages/tracehub-api:packages/tracehub-mcp-common:packages/tracehub-mcp-k8s"
+exclude = "migrations"
+
+[[tool.mypy.overrides]]
+module = ["pgvector.*", "alembic.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+pythonpath = [
+    "packages/tracehub-core",
+    "packages/tracehub-kb",
+    "packages/tracehub-api",
+    "packages/tracehub-mcp-common",
+    "packages/tracehub-mcp-k8s",
+]
+filterwarnings = ["error::DeprecationWarning"]

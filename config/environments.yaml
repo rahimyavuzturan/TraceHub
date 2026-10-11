@@ -1,0 +1,56 @@
+# Mantiksal ortam -> fiziksel hedef eslemesi (ADR-08).
+#
+# Her arac cagrisinda 'environment' parametresi ZORUNLUDUR. Burada tanimli
+# olmayan bir ortam adi reddedilir.
+#
+# DIKKAT: Bu dosya ornek degerlerle doldurulmustur. Gercek cluster adlari,
+# Elasticsearch ve Grafana ornekleriyle guncellenmelidir (STATUS A6).
+
+environments:
+  prod:
+    display_name: "Üretim"
+    is_production: true
+    k8s_context: prod-cluster
+    elastic: elastic-prod
+    grafana: grafana-prod
+    namespaces: ["mobile", "payments", "integration"]
+
+  preprod:
+    display_name: "Ön Üretim"
+    is_production: false
+    k8s_context: preprod-cluster
+    elastic: elastic-test
+    grafana: grafana-test
+    namespaces: ["mobile", "payments", "integration"]
+
+  test:
+    display_name: "Test"
+    is_production: false
+    k8s_context: test-cluster
+    elastic: elastic-test
+    grafana: grafana-test
+    namespaces: ["mobile", "payments", "integration"]
+
+  dmz-prod:
+    display_name: "DMZ Üretim"
+    is_production: true
+    k8s_context: dmz-prod-cluster
+    elastic: elastic-prod
+    grafana: grafana-prod
+    namespaces: ["dmz-mobile", "dmz-web"]
+
+  dmz-preprod:
+    display_name: "DMZ Ön Üretim"
+    is_production: false
+    k8s_context: dmz-cluster
+    elastic: elastic-prod
+    grafana: grafana-prod
+    namespaces: ["dmz-mobile-prep", "dmz-web-prep"]
+
+  dmz-test:
+    display_name: "DMZ Test"
+    is_production: false
+    k8s_context: dmz-cluster
+    elastic: elastic-test
+    grafana: grafana-test
+    namespaces: ["dmz-mobile-test", "dmz-web-test"]

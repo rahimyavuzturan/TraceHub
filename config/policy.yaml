@@ -1,0 +1,52 @@
+# Salt-okunur erisim politikasi (savunmanin 3. katmani).
+#
+# Kod dogru olsa bile bu politika kapiyi daraltir. Her arac cagrisinin ILK
+# satiri ctx.policy.assert_allowed(...) olmalidir.
+#
+# Kalip sozdizimi: fnmatch (* ve ?). Deny listesi allow listesini EZER.
+#
+# Detay: docs/06-SECURITY.md
+
+kubernetes:
+  namespaces:
+    allow: ["mobile", "payments", "integration", "dmz-*"]
+    deny: ["kube-system", "kube-public", "kube-node-lease", "cattle-*", "fleet-*"]
+  limits:
+    max_tail_lines: 2000
+    max_since_minutes: 1440
+
+elasticsearch:
+  indices:
+    allow: ["*-web-*", "*-api-*", "app-*", "msube-*", "isube-*", "tsube-*"]
+    # Guvenlik ve denetim index'leri ile sistem index'leri asla okunmaz.
+    deny: ["security-*", "audit-*", ".*", "*-pii-*"]
+  limits:
+    max_size: 200
+    max_window_minutes: 1440
+    default_window_minutes: 60      # ADR-09
+    require_time_window: true
+
+grafana:
+  limits:
+    max_window_minutes: 1440
+    default_window_minutes: 60
+
+winrm:
+  hosts:
+    # Yalnizca test/preprod onekleri. Prod sunuculari bilerek disaridadir.
+    allow: ["SDL*", "STL*", "SXL*"]
+    deny: ["SPL*", "SRV*"]
+  commands_file: config/winrm_commands.yaml
+
+netscaler:
+  limits:
+    max_results: 100
+
+azure_devops:
+  limits:
+    max_results: 50
+
+budget:
+  tool_calls_per_minute: 30
+  tool_calls_per_session: 200
+  max_tool_output_chars: 20000

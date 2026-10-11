@@ -1,0 +1,42 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ortam ve sırlar
+.env
+.env.*
+!.env.example
+*.pem
+*.pfx
+*.key
+secrets/
+kubeconfig*
+!kubeconfig.example
+
+# Node
+node_modules/
+web/dist/
+.vite/
+
+# Editör / işletim sistemi
+.DS_Store
+Thumbs.db
+.idea/
+
+# Bilgi tabanı içe aktarımları (kaynaktan üretilir)
+knowledge/imported/
+
+# Yerel veri
+data/
+*.db
+*.sqlite3
